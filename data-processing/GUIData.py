@@ -29,7 +29,7 @@ class GUIData:
         Recursively extract children from an element
         '''
         # discard illegal elements
-        if element['bounds'] == [0,0,0,0]:
+        if element['bounds'][0] == element['bounds'][2] or element['bounds'][1] == element['bounds'][3]:
             return
         element['id'] = self.element_id
         self.elements.append(element)
@@ -46,9 +46,15 @@ class GUIData:
     def cvt_elements_to_dataframe(self):
         self.elements_df = pd.DataFrame(self.elements)
 
+    def save_element_as_csv(self, file_name='elements.csv'):
+        if self.elements_df is None:
+            self.cvt_elements_to_dataframe()
+        self.elements_df.to_csv(file_name)
+
     def visualize_elements(self):
         board = self.img.copy()
         for ele in self.elements:
+            print(ele['id'], ele['class'])
             print(ele, '\n')
             bounds = ele['bounds']
             clip = self.img[bounds[1]: bounds[3], bounds[0]: bounds[2]]
