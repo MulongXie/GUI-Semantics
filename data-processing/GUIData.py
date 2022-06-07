@@ -15,6 +15,7 @@ class GUIData:
 
         self.elements = []       # list of element in dictionary {'id':, 'class':...}
         self.element_id = 0
+        self.elements_df = None  # pandas.dataframe
 
     def extract_elements_from_vh(self):
         '''
@@ -41,6 +42,9 @@ class GUIData:
             # replace wordy 'children' with 'children_id'
             del element['children']
         del element['ancestors']
+
+    def cvt_elements_to_dataframe(self):
+        self.elements_df = pd.DataFrame(self.elements)
 
     def visualize_elements(self):
         board = self.img.copy()
