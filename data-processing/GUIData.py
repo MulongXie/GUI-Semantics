@@ -28,18 +28,18 @@ class GUIData:
         '''
         Recursively extract children from an element
         '''
-        # discard illegal elements
-        if element['bounds'][0] == element['bounds'][2] or element['bounds'][1] == element['bounds'][3]:
-            return
         element['id'] = self.element_id
-        self.elements.append(element)
+        # discard illegal elements
+        if not (element['bounds'][0] == element['bounds'][2] or element['bounds'][1] == element['bounds'][3]) and \
+                not ('layout' in element['class'].lower()):
+            self.elements.append(element)
         if 'children' in element:
-            element['children_id'] = []
+            element['children-id'] = []
             for child in element['children']:
                 self.element_id += 1
-                element['children_id'].append(self.element_id)
+                element['children-id'].append(self.element_id)
                 self.extract_children_elements(child)
-            # replace wordy 'children' with 'children_id'
+            # replace wordy 'children' with 'children-id'
             del element['children']
         del element['ancestors']
 

@@ -33,3 +33,17 @@ class DataInspector:
         self.guis.append(gui)
         return gui
 
+
+if __name__ == '__main__':
+    data = DataInspector()
+    data.get_json_files()
+
+    for jfile in data.json_files:
+        print('***********', jfile)
+        imgfile = data.get_another_file(jfile)
+
+        gui = data.load_gui(imgfile, jfile)
+        gui.extract_elements_from_vh()
+        gui.visualize_elements()  # press 'q' to exit
+        # gui.save_element_as_csv()
+        # break
