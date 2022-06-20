@@ -18,9 +18,10 @@ class Detector:
         self.file_name = img_file.replace('\\', '/').split('/')[-1][:-4]
 
         self.output_dir = output_dir
-        self.ocr_dir = pjoin(self.output_dir, 'ocr') if output_dir is not None else None
-        self.non_text_dir = pjoin(self.output_dir, 'ip') if output_dir is not None else None
-        self.merge_dir = pjoin(self.output_dir, 'uied') if output_dir is not None else None
+        self.ocr_dir = pjoin(self.output_dir, 'ocr')
+        self.non_text_dir = pjoin(self.output_dir, 'ip')
+        self.merge_dir = pjoin(self.output_dir, 'uied')
+        self.detection_result_file = pjoin(self.merge_dir, self.file_name + '.json')
 
         self.detection_result_img = {'text': None, 'non-text': None, 'merge': None}  # visualized detection result
         self.compos_json = None  # {'img_shape':(), 'compos':[]}, detection result
@@ -42,27 +43,14 @@ class Detector:
     *** GUI Element Detection ***
     *****************************
     '''
-    def detect_element(self, is_ocr=True, is_non_text=True, is_merge=True, img_resize_longest_side=800, show=False):
-        if self.img_file is None:
-            print('No GUI image is input')
-            return
-        # resize GUI image by the longest side while detecting non-text elements
-        if img_resize_longest_side is not None:
-            self.img_reshape = self.resize_by_longest_side(img_resize_longest_side)
-            self.img_resized = cv2.resize(self.img_org, (self.img_reshape[1], self.img_reshape[0]))
-            resize_height = self.img_reshape[0]
-        else:
-            self.img_reshape = self.img_org.shape
-            self.img_resized = self.img_org.copy()
-            resize_height = None
-
+    def detect_element(self, is_ocr=True, is_non_text=True, is_merge=True, show=False):
         if is_ocr:
             self.detection_result_img['text'] = text.text_detection(self.img_file, self.ocr_dir, show=show)
         elif os.path.isfile(pjoin(self.ocr_dir, self.file_name + '.jpg')):
             self.detection_result_img['text'] = cv2.imread(pjoin(self.ocr_dir, self.file_name + '.jpg'))
 
         if is_non_text:
-            self.detection_result_img['non-text'] = ip.compo_detection(self.img_file, self.non_text_dir, self.key_params, resize_by_height=resize_height, show=show)
+            self.detection_result_img['non-text'] = ip.compo_detection(self.img_file, self.non_text_dir, self.key_params, resize_by_height=self.img_reshape[0], show=show)
         elif os.path.isfile(pjoin(self.non_text_dir, self.file_name + '.jpg')):
             self.detection_result_img['non-text'] = cv2.imread(pjoin(self.non_text_dir, self.file_name + '.jpg'))
 
@@ -76,7 +64,7 @@ class Detector:
         '''
         Load json detection result from json file
         '''
-        self.compos_json = json.load(open(pjoin(self.merge_dir, self.file_name + '.json')))
+        self.compos_json = json.load(open(self.detection_result_file))
         self.img_reshape = self.compos_json['img_shape']
         self.img_resized = cv2.resize(self.img_org, (self.img_reshape[1], self.img_reshape[0]))
         self.draw_element_detection()
@@ -86,13 +74,6 @@ class Detector:
     *** Visualization ***
     *********************
     '''
-    def visualize_element_detection(self):
-        cv2.imshow('text', cv2.resize(self.detection_result_img['text'], (500, 800)))
-        cv2.imshow('non-text', cv2.resize(self.detection_result_img['non-text'], (500, 800)))
-        cv2.imshow('merge', cv2.resize(self.detection_result_img['merge'], (500, 800)))
-        cv2.waitKey()
-        cv2.destroyAllWindows()
-
     def draw_element_detection(self, line=2):
         board_text = self.img_resized.copy()
         board_nontext = self.img_resized.copy()
@@ -108,3 +89,11 @@ class Detector:
         self.detection_result_img['text'] = board_text
         self.detection_result_img['non-text'] = board_nontext
         self.detection_result_img['merge'] = board_all
+
+    def visualize_element_detection(self):
+        cv2.imshow('text', cv2.resize(self.detection_result_img['text'], (500, 800)))
+        cv2.imshow('non-text', cv2.resize(self.detection_result_img['non-text'], (500, 800)))
+        cv2.imshow('merge', cv2.resize(self.detection_result_img['merge'], (500, 800)))
+        cv2.waitKey()
+        cv2.destroyAllWindows()
+
