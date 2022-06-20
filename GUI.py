@@ -5,9 +5,9 @@ import json
 import time
 from os.path import join as pjoin
 
-import element.detect_text.text_detection as text
-import element.detect_compo.ip_region_proposal as ip
-import element.detect_merge.merge as merge
+import detection.detect_text.text_detection as text
+import detection.detect_compo.ip_region_proposal as ip
+import detection.detect_merge.merge as merge
 from layout.obj.Compos_DF import ComposDF
 from layout.obj.Compo import *
 from layout.obj.Block import *
@@ -56,13 +56,6 @@ class GUI:
         json.dump(js, open(pjoin(self.layout_dir, self.file_name + '.json'), 'w'), indent=4)
         # print('Layout recognition result json save to ', output_dir)
 
-    def save_list(self):
-        os.makedirs(self.layout_dir, exist_ok=True)
-        js = {'ui': self.file_name, 'list': [], 'multitab': []}
-        for lst in self.lists:
-            js['list'].append(lst.wrap_list_items())
-        json.dump(js, open(pjoin(self.layout_dir, self.file_name + '-list.json'), 'w'), indent=4)
-
     def save_detection_result(self):
         if not os.path.exists(pjoin(self.merge_dir, self.file_name + '.jpg')):
             os.makedirs(self.ocr_dir, exist_ok=True)
@@ -78,7 +71,6 @@ class GUI:
         self.save_detection_result()
         self.save_layout_result_imgs()
         self.save_layout_result_json()
-        self.save_list()
 
     '''
     *****************************
@@ -149,76 +141,6 @@ class GUI:
     *** Layout Recognition ***
     **************************
     '''
-    # *** step1 ***
-    def cvt_compos_json_to_dataframe(self):
-        '''
-        Represent the components using a Pandas DataFrame for the sake of processing
-        '''
-        self.compos_df = ComposDF(json_data=self.compos_json, gui_img=self.img_resized.copy())
-
-    # *** step2 ***
-    def recognize_groups(self):
-        '''
-        Recognize perceptual groups according to clustering and pairing algorithms
-        '''
-        # cluster elements into groups according to position and area
-        self.compos_df.recognize_element_groups_by_clustering()   # group, alignment_in_group, group_nontext, group_text
-        # group similar Blocks (Containers) by checking their children's similarity
-        self.compos_df.recognize_similar_blocks()       # group_pair
-        # pair clusters (groups) into a larger group
-        self.compos_df.pair_groups()                    # group_pair, pair_to
-        # identify list item (paired elements) in each compound large group
-        self.compos_df.list_item_partition()            # list_item
-        # filter out invalid unpaired groups
-        self.compos_df.remove_invalid_groups()
-        # add missed compos by checking group items
-        self.compos_df.add_missed_compos_by_checking_group_item()
-
-    # *** step3 ***
-    def cvt_groups_to_list_compos(self):
-        '''
-        Represent the recognized perceptual groups as List objects
-        '''
-        df = self.compos_df.compos_dataframe
-        self.lists = []
-        self.compos = []
-
-        # multiple list (multiple compos in each list item)
-        groups = df.groupby('group_pair').groups
-        list_id = 0
-        for i in groups:
-            if i == -1 or len(groups[i]) == 1:
-                continue
-            self.lists.append(List(compo_id='l-' + str(list_id), list_class='multi', compo_df=df.loc[groups[i]], list_alignment=df.loc[groups[i][0]]['alignment_in_group']))
-            list_id += 1
-            # remove selected compos
-            df = df.drop(list(groups[i]))
-
-        # single list (single compo in each list item)
-        groups = df.groupby('group').groups
-        for i in groups:
-            if i == -1 or len(groups[i]) == 1:
-                continue
-            self.lists.append(List(compo_id='l-' + str(list_id), list_class='single', compo_df=df.loc[groups[i]], list_alignment=df.loc[groups[i][0]]['alignment_in_group']))
-            list_id += 1
-            # remove selected compos
-            df = df.drop(list(groups[i]))
-
-        # convert left compos that are not in lists
-        for i in range(len(df)):
-            compo_df = df.iloc[i]
-            self.compos.append(Compo(compo_id='c-' + str(compo_df['id']), compo_class=compo_df['class'], compo_df=compo_df))
-        # regard the list as a type of component in the GUI
-        self.compos += self.lists
-
-    # *** step4 ***
-    def slice_hierarchical_block(self):
-        '''
-        Slice the GUI into hierarchical blocks based on the recognized Compos
-        '''
-        blocks, non_blocked_compos = slice_blocks(self.compos, 'v')
-        self.blocks = blocks
-
     # entry method
     def recognize_layout(self, is_save=True):
         start = time.clock()

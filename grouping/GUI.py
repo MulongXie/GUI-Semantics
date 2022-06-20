@@ -1,18 +1,14 @@
-import pandas as pd
-import cv2
-import os
-import json
 import time
 from os.path import join as pjoin
 
-import element.detect_text.text_detection as text
-import element.detect_compo.ip_region_proposal as ip
-import element.detect_merge.merge as merge
-from layout.obj.Compos_DF import ComposDF
-from layout.obj.Compo import *
-from layout.obj.Block import *
-from layout.obj.List import *
-import layout.lib.draw as draw
+import detection.detect_text.text_detection as text
+import detection.detect_compo.ip_region_proposal as ip
+import detection.detect_merge.merge as merge
+from grouping.obj.Compos_DF import ComposDF
+from grouping.obj.Compo import *
+from grouping.obj.Block import *
+from grouping.obj.List import *
+import grouping.lib.draw as draw
 
 
 class GUI:
@@ -321,7 +317,7 @@ class GUI:
                 child = children.iloc[j]
                 color = (0,255,0) if child['class'] == 'Compo' else (0,0,255)
                 cv2.rectangle(board, (child['column_min'], child['row_min']), (child['column_max'], child['row_max']), color, 2)
-            draw.draw_label(board, (container['column_min'], container['row_min'], container['column_max'], container['row_max']), (166,166,0), text='container')
+            draw.draw_label(board, (container['column_min'], container['row_min'], container['column_max'], container['row_max']), (166, 166, 0), text='container')
         if show:
             cv2.imshow('container', board)
             cv2.waitKey()
