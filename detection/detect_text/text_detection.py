@@ -1,5 +1,5 @@
-import element.detect_text.ocr as ocr
-from element.detect_text.Text import Text
+import detection.detect_text.ocr as ocr
+from detection.detect_text.Text import Text
 import cv2
 import json
 import time

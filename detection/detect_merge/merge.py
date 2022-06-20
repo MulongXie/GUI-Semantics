@@ -6,7 +6,7 @@ import os
 import time
 import shutil
 
-from element.detect_merge.Element import Element
+from detection.detect_merge.Element import Element
 
 
 def show_elements(org_img, eles, show=False, win_name='element', wait_key=0, shown_resize=None, line=2):

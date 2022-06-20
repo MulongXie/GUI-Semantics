@@ -2,7 +2,7 @@ import pandas as pd
 import cv2
 from random import randint as rint
 
-from layout.lib.draw import *
+from grouping.lib.draw import *
 
 block_id = 0
 

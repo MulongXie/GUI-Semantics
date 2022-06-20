@@ -1,5 +1,5 @@
-from layout.obj.Compo import Compo
-from layout.lib.draw import *
+from grouping.obj.Compo import Compo
+from grouping.lib.draw import *
 
 import cv2
 import numpy as np

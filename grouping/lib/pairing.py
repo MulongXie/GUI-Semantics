@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import math
 
-import layout.lib.draw as draw
+import grouping.lib.draw as draw
 
 
 def calc_compos_distance(compo1, compo2):

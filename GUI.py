@@ -1,18 +1,14 @@
-import pandas as pd
-import cv2
-import os
-import json
 import time
 from os.path import join as pjoin
 
 import detection.detect_text.text_detection as text
 import detection.detect_compo.ip_region_proposal as ip
 import detection.detect_merge.merge as merge
-from layout.obj.Compos_DF import ComposDF
-from layout.obj.Compo import *
-from layout.obj.Block import *
-from layout.obj.List import *
-import layout.lib.draw as draw
+from grouping.obj.Compos_DF import ComposDF
+from grouping.obj.Compo import *
+from grouping.obj.Block import *
+from grouping.obj.List import *
+import grouping.lib.draw as draw
 
 
 class GUI:
@@ -56,6 +52,13 @@ class GUI:
         json.dump(js, open(pjoin(self.layout_dir, self.file_name + '.json'), 'w'), indent=4)
         # print('Layout recognition result json save to ', output_dir)
 
+    def save_list(self):
+        os.makedirs(self.layout_dir, exist_ok=True)
+        js = {'ui': self.file_name, 'list': [], 'multitab': []}
+        for lst in self.lists:
+            js['list'].append(lst.wrap_list_items())
+        json.dump(js, open(pjoin(self.layout_dir, self.file_name + '-list.json'), 'w'), indent=4)
+
     def save_detection_result(self):
         if not os.path.exists(pjoin(self.merge_dir, self.file_name + '.jpg')):
             os.makedirs(self.ocr_dir, exist_ok=True)
@@ -71,6 +74,7 @@ class GUI:
         self.save_detection_result()
         self.save_layout_result_imgs()
         self.save_layout_result_json()
+        self.save_list()
 
     '''
     *****************************
@@ -127,15 +131,6 @@ class GUI:
         self.img_resized = cv2.resize(self.img, (self.img_reshape[1], self.img_reshape[0]))
         self.draw_element_detection()
 
-    def load_compos(self, compos):
-        '''
-        Load compos from objects: {'img_shape':(), 'compos':[]}
-        '''
-        self.compos_json = compos.copy()
-        self.img_reshape = self.compos_json['img_shape']
-        self.img_resized = cv2.resize(self.img, (self.img_reshape[1], self.img_reshape[0]))
-        self.draw_element_detection()
-
     '''
     **************************
     *** Layout Recognition ***
@@ -179,10 +174,10 @@ class GUI:
         for compo in self.compos_json['compos']:
             position = compo['position']
             if compo['class'] == 'Text':
-                draw_label(board_text, [position['column_min'], position['row_min'], position['column_max'], position['row_max']], colors[compo['class']], line=line)
+                draw.draw_label(board_text, [position['column_min'], position['row_min'], position['column_max'], position['row_max']], colors[compo['class']], line=line)
             else:
-                draw_label(board_nontext, [position['column_min'], position['row_min'], position['column_max'], position['row_max']], colors[compo['class']], line=line)
-            draw_label(board_all, [position['column_min'], position['row_min'], position['column_max'], position['row_max']], colors[compo['class']], line=line)
+                draw.draw_label(board_nontext, [position['column_min'], position['row_min'], position['column_max'], position['row_max']], colors[compo['class']], line=line)
+            draw.draw_label(board_all, [position['column_min'], position['row_min'], position['column_max'], position['row_max']], colors[compo['class']], line=line)
 
         self.detection_result_img['text'] = board_text
         self.detection_result_img['non-text'] = board_nontext
@@ -243,7 +238,7 @@ class GUI:
                 child = children.iloc[j]
                 color = (0,255,0) if child['class'] == 'Compo' else (0,0,255)
                 cv2.rectangle(board, (child['column_min'], child['row_min']), (child['column_max'], child['row_max']), color, 2)
-            draw.draw_label(board, (container['column_min'], container['row_min'], container['column_max'], container['row_max']), (166,166,0), text='container')
+            draw.draw_label(board, (container['column_min'], container['row_min'], container['column_max'], container['row_max']), (166, 166, 0), text='container')
         if show:
             cv2.imshow('container', board)
             cv2.waitKey()
