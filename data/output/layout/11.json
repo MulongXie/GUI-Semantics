@@ -1,0 +1,104 @@
+[
+    {
+        "id": "b-5",
+        "children": [
+            {
+                "id": "b-6",
+                "children": [
+                    {
+                        "id": "c-1",
+                        "text_content": null,
+                        "class": "Compo",
+                        "location": {
+                            "right": 45,
+                            "left": 21,
+                            "bottom": 30,
+                            "top": 25
+                        }
+                    },
+                    {
+                        "id": "c-2",
+                        "text_content": null,
+                        "class": "Compo",
+                        "location": {
+                            "right": 46,
+                            "left": 21,
+                            "bottom": 43,
+                            "top": 33
+                        }
+                    }
+                ],
+                "location": {
+                    "right": 46,
+                    "left": 21,
+                    "bottom": 43,
+                    "top": 25
+                },
+                "class": "Block"
+            },
+            {
+                "id": "c-9",
+                "text_content": "Deals",
+                "class": "Text",
+                "location": {
+                    "right": 137,
+                    "left": 77,
+                    "bottom": 43,
+                    "top": 26
+                }
+            },
+            {
+                "id": "c-0",
+                "text_content": null,
+                "class": "Compo",
+                "location": {
+                    "right": 480,
+                    "left": 457,
+                    "bottom": 46,
+                    "top": 24
+                }
+            }
+        ],
+        "location": {
+            "right": 480,
+            "left": 21,
+            "bottom": 46,
+            "top": 24
+        },
+        "class": "Block"
+    },
+    {
+        "id": "b-7",
+        "children": [
+            {
+                "id": "c-10",
+                "text_content": "NEW",
+                "class": "Text",
+                "location": {
+                    "right": 142,
+                    "left": 106,
+                    "bottom": 105,
+                    "top": 91
+                }
+            },
+            {
+                "id": "c-16",
+                "text_content": "POPULAR",
+                "class": "Text",
+                "location": {
+                    "right": 410,
+                    "left": 336,
+                    "bottom": 105,
+                    "top": 91
+                }
+            }
+        ],
+        "location": {
+            "right": 410,
+            "left": 106,
+            "bottom": 105,
+            "top": 91
+        },
+        "class": "Block"
+    }
+]
