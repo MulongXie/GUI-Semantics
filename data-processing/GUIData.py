@@ -4,14 +4,14 @@ import pandas as pd
 
 
 class GUIData:
-    def __init__(self, gui_id, gui_img_file, gui_vh_file):
+    def __init__(self, gui_id, gui_img_file, gui_json_file):
         self.id = gui_id
 
         self.img_file = gui_img_file
-        self.vh_file = gui_vh_file
+        self.json_file = gui_json_file
 
         self.img = cv2.resize(cv2.imread(gui_img_file), (1440, 2560))  # cv2 image, the screenshot of the GUI
-        self.vh = json.load(open(gui_vh_file, 'r'))  # json data, the view hierarchy of the GUI
+        self.json = json.load(open(gui_json_file, 'r'))  # json data, the view hierarchy of the GUI
 
         self.elements = []       # list of element in dictionary {'id':, 'class':...}
         self.element_id = 0
@@ -19,9 +19,16 @@ class GUIData:
 
     def extract_elements_from_vh(self):
         '''
-        Extract elements from vh and store them as dictionaries
+        Extract elements from raw view hierarchy Json file and store them as dictionaries
         '''
-        element_root = self.vh['activity']['root']
+        element_root = self.json['activity']['root']
+        self.extract_children_elements(element_root)
+
+    def extract_element_from_semantic_tree(self):
+        '''
+        Extract element from Rico semantic Json file
+        '''
+        element_root = self.json
         self.extract_children_elements(element_root)
 
     def extract_children_elements(self, element):
