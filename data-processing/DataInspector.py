@@ -30,6 +30,7 @@ class DataInspector:
 
     def load_gui(self, image_file, json_file):
         gui = GUIData(self.gui_id, image_file, json_file)
+        self.gui_id += 1
         self.guis.append(gui)
         return gui
 

@@ -30,8 +30,7 @@ class GUIData:
         '''
         element['id'] = self.element_id
         # discard illegal elements
-        if not (element['bounds'][0] == element['bounds'][2] or element['bounds'][1] == element['bounds'][3]) and \
-                not ('layout' in element['class'].lower()):
+        if self.check_if_element_valid(element):
             self.elements.append(element)
         if 'children' in element:
             element['children-id'] = []
@@ -42,6 +41,15 @@ class GUIData:
             # replace wordy 'children' with 'children-id'
             del element['children']
         del element['ancestors']
+
+    def check_if_element_valid(self, element):
+        '''
+        Check if the element is valid and should be kept
+        '''
+        if (element['bounds'][0] == element['bounds'][2] or element['bounds'][1] == element['bounds'][3]) or \
+                not ('layout' in element['class'].lower()):
+            return False
+        return True
 
     def cvt_elements_to_dataframe(self):
         self.elements_df = pd.DataFrame(self.elements)
