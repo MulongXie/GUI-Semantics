@@ -18,11 +18,15 @@ class DataInspector:
         self.guis = []  # list of GUIData objects
         self.gui_id = 0
 
-    def get_all_img_files(self, img_type='.jpg'):
+    def get_all_img_files(self, img_type='.jpg', sort_files_by_name=True):
         self.img_files = glob(pjoin(self.img_directory, '*' + img_type))
+        if sort_files_by_name:
+            self.img_files = sorted(self.img_files, key=lambda x: int(x.replace('\\', '/').split('/')[-1].split('.')[0]))
 
-    def get_all_json_files(self):
+    def get_all_json_files(self, sort_files_by_name=True):
         self.json_files = glob(pjoin(self.json_directory, '*.json'))
+        if sort_files_by_name:
+            self.json_files = sorted(self.json_files, key=lambda x: int(x.replace('\\', '/').split('/')[-1].split('.')[0]))
 
     def generate_file_path(self, source_file, target_file_type='.jpg'):
         '''
