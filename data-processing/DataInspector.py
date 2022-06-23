@@ -17,15 +17,15 @@ class DataInspector:
         self.guis = []  # list of GUIData objects
         self.gui_id = 0
 
-    def get_img_files(self):
+    def get_all_img_files_on_data_directory(self):
         self.img_files = glob(pjoin(self.data_directory, '.jpg'))
 
-    def get_json_files(self):
+    def get_all_json_files_on_data_directory(self):
         self.json_files = glob(pjoin(self.data_directory, '*.json'))
 
-    def get_another_file(self, file_name, target_type='.jpg'):
+    def generate_file_path(self, file_name, file_type='.jpg'):
         name = file_name.replace('/', '\\').split('\\')[-1].split('.')[0]
-        target_file = pjoin(self.data_directory, name + target_type)
+        target_file = pjoin(self.data_directory, name + file_type)
         return target_file
 
     def load_gui(self, image_file, json_file):
@@ -36,11 +36,11 @@ class DataInspector:
 
 if __name__ == '__main__':
     data = DataInspector()
-    data.get_json_files()
+    data.get_all_json_files_on_data_directory()
 
     for jfile in data.json_files:
         print('***********', jfile)
-        imgfile = data.get_another_file(jfile)
+        imgfile = data.generate_file_path(jfile)
 
         gui = data.load_gui(imgfile, jfile)
         gui.extract_elements_from_vh()
