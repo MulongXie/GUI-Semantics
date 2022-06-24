@@ -1,6 +1,8 @@
+import os
 import cv2
 import json
 import pandas as pd
+from os.path import join as pjoin
 
 
 class GUIData:
@@ -54,7 +56,8 @@ class GUIData:
         Check if the element is valid and should be kept
         '''
         if (element['bounds'][0] == element['bounds'][2] or element['bounds'][1] == element['bounds'][3]) or \
-                'layout' in element['class'].lower():
+                'layout' in element['class'].lower() or\
+                'componentLabel' not in element:
             return False
         return True
 
@@ -65,6 +68,16 @@ class GUIData:
         if self.elements_df is None:
             self.cvt_elements_to_dataframe()
         self.elements_df.to_csv(file_name)
+
+    def save_elements_clips_by_compo_label(self, output_dir):
+        for i, ele in enumerate(self.elements):
+            bounds = ele['bounds']
+            clip = self.img[bounds[1]: bounds[3], bounds[0]: bounds[2]]
+            compo_cls_dir = pjoin(output_dir, ele['componentLabel'])
+            if not os.path.exists(compo_cls_dir):
+                os.makedirs(compo_cls_dir, exist_ok=True)
+            clip_name = str(self.id) + '-' + str(i) + '.jpg'
+            cv2.imwrite(pjoin(compo_cls_dir, clip_name), clip)
 
     def visualize_elements(self):
         board = self.img.copy()

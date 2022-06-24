@@ -45,40 +45,18 @@ class DataInspector:
             target_file = pjoin(self.json_directory, name + target_file_type)
         return target_file
 
-    def init_gui(self, image_file, json_file):
-        '''
-        Initiate a GUI object for data management
-        '''
-        gui = GUIData(self.gui_id, image_file, json_file)
-        self.gui_id += 1
-        self.guis.append(gui)
-        return gui
-
-    def load_gui_img_and_element(self, img_file, json_file, extract_from='vh', save_as_df=False):
+    def load_gui_img_and_element(self, img_file, json_file, show=False, save_as_df=False, save_element_clips=False, output_compo_dir=None):
         '''
         Inspect GUI by visualizing the image and printing out the json file of attributes
-        :param img_file: GUI image file path
-        :param json_file: GUI Json data file path
-        :param extract_from:
-            @'vh' - from raw view hierarchy file (start with 'activity')
-            @'semantic' - from the semantic json file processed by Rico
-        :param save_as_df: Boolean, if True, save the elements into csv where the row title is attribute
         '''
-        gui = self.init_gui(img_file, json_file)
-        if extract_from == 'vh':
-            gui.extract_elements_from_vh()
-        else:
-            gui.extract_element_from_semantic_tree()
-        gui.visualize_elements()
+        gui = GUIData(self.gui_id, img_file, json_file)
+        self.gui_id += 1
+        self.guis.append(gui)
+
+        gui.extract_element_from_semantic_tree()
+        if show:
+            gui.visualize_elements()
         if save_as_df:
             gui.save_element_as_csv()
-
-
-if __name__ == '__main__':
-    data = DataInspector()
-    data.get_all_json_files_on_data_directory()
-
-    for jfile in data.json_files:
-        print('***********', jfile)
-        imgfile = data.generate_file_path(jfile)
-        data.inspect_gui_img_and_element(imgfile, jfile)  # press 'q' to exit
+        if save_element_clips:
+            gui.save_elements_clips_by_compo_label(output_compo_dir)
