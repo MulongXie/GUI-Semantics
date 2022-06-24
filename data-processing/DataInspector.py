@@ -15,7 +15,6 @@ class DataInspector:
         self.img_files = None
         self.json_files = None
 
-        self.guis = []  # list of GUIData objects
         self.element_clips_count = {}  # {'componentLabel': No_clips}
 
     def get_all_img_files(self, img_type='.jpg', sort_files_by_name=True):
@@ -50,7 +49,6 @@ class DataInspector:
         Inspect GUI by visualizing the image and printing out the json file of attributes
         '''
         gui = GUIData(img_file, json_file)
-        self.guis.append(gui)
 
         gui.extract_element_from_semantic_tree()
         if show:
