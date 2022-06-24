@@ -6,11 +6,10 @@ from os.path import join as pjoin
 
 
 class GUIData:
-    def __init__(self, gui_id, gui_img_file, gui_json_file):
-        self.id = gui_id
-
+    def __init__(self, gui_img_file, gui_json_file):
         self.img_file = gui_img_file
         self.json_file = gui_json_file
+        self.gui_name = gui_img_file.replace('/', '\\').split('\\')[-1].split('.')[0]
 
         self.img = cv2.resize(cv2.imread(gui_img_file), (1440, 2560))  # cv2 image, the screenshot of the GUI
         self.json = json.load(open(gui_json_file, 'r'))  # json data, the view hierarchy of the GUI
@@ -69,15 +68,19 @@ class GUIData:
             self.cvt_elements_to_dataframe()
         self.elements_df.to_csv(file_name)
 
-    def save_elements_clips_by_compo_label(self, output_dir):
+    def save_elements_clips_by_compo_label(self, output_dir, elements_count):
         for i, ele in enumerate(self.elements):
             bounds = ele['bounds']
             clip = self.img[bounds[1]: bounds[3], bounds[0]: bounds[2]]
             compo_cls_dir = pjoin(output_dir, ele['componentLabel'])
-            if not os.path.exists(compo_cls_dir):
+            if ele['componentLabel'] not in elements_count:
                 os.makedirs(compo_cls_dir, exist_ok=True)
-            clip_name = str(self.id) + '-' + str(i) + '.jpg'
+                elements_count[ele['componentLabel']] = 1
+            else:
+                elements_count[ele['componentLabel']] += 1
+            clip_name = str(self.gui_name) + '-' + str(i) + '.jpg'
             cv2.imwrite(pjoin(compo_cls_dir, clip_name), clip)
+        print(elements_count)
 
     def visualize_elements(self):
         board = self.img.copy()
