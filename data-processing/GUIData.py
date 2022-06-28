@@ -54,7 +54,7 @@ class GUIData:
         '''
         Check if the element is valid and should be kept
         '''
-        if (element['bounds'][0] == element['bounds'][2] or element['bounds'][1] == element['bounds'][3]) or \
+        if (element['bounds'][0] >= element['bounds'][2] or element['bounds'][1] >= element['bounds'][3]) or \
                 'layout' in element['class'].lower() or\
                 'componentLabel' not in element:
             return False
