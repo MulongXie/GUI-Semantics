@@ -14,40 +14,32 @@ class Data:
         self.X_test, self.Y_test = None, None
 
         self.image_shape = (32, 32, 3)
-        self.class_map = ['Text', 'Non-Text']
+        self.class_map = ['Text Button', 'Input', 'Switch', 'Image', 'Icon', 'Checkbox']
         self.class_number = len(self.class_map)
+
         self.data_dir = data_dir
+        self.class_dirs = glob(pjoin(self.data_dir, '*'))
 
     def count_data_in_data_dir(self):
         '''
         Check the data amount in each category under the data directory
         '''
-        class_dirs = glob(pjoin(self.data_dir, '*'))
-        for class_dir in class_dirs:
+        for class_dir in self.class_dirs:
             c_dir = pjoin(class_dir, '*')
             print(len(glob(c_dir)), '\t', class_dir)
 
-    def load_data(self, resize=True, shape=None, max_number=1000000):
-        # if customize shape
-        if shape is not None:
-            self.image_shape = shape
-        else:
-            shape = self.image_shape
-
-        # load data
-        for p in glob(pjoin(self.data_path, '*')):
-            print("*** Loading components of %s: %d ***" %(p.split('\\')[-1], int(len(glob.glob(pjoin(p, '*.png'))))))
-            label = self.class_map.index(p.split('\\')[-1])  # map to index of classes
-            for i, image_path in enumerate(tqdm(glob.glob(pjoin(p, '*.png'))[:max_number])):
-                image = cv2.imread(image_path)
-                if resize:
-                    image = cv2.resize(image, shape[:2])
-                self.images.append(image)
-                self.labels.append(label)
-
-        assert len(self.images) == len(self.labels)
-        self.data_num = len(self.images)
-        print('%d Data Loaded' % self.data_num)
+    def load_data_in_class_map(self):
+        for class_dir in self.class_dirs:
+            cls = class_dir.replace('\\', '/').split('/')[-1]
+            if cls in self.class_map:
+                label = self.class_map.index(cls)
+                img_files = glob(pjoin(class_dir, '*'))
+                print('Total Images: %d; \t Load image in class of %s [%d]' % (len(img_files), cls, label))
+                for img_file in tqdm(img_files):
+                    img = cv2.imread(img_file)
+                    img = cv2.resize(img, self.image_shape[:2])
+                    self.images.append(img)
+                    self.labels.append(label)
 
     def generate_training_data(self, train_data_ratio=0.8):
         # transfer int into c dimensions one-hot array
