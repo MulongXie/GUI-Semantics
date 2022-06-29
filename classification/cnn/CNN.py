@@ -1,13 +1,10 @@
 import keras
-from keras.applications.resnet50 import ResNet50
+from keras_applications.resnet50 import ResNet50
 from keras.models import Model,load_model
 from keras.layers import Dense, Activation, Flatten, Dropout
 from sklearn.metrics import confusion_matrix
 import numpy as np
 import cv2
-
-from config.CONFIG import Config
-cfg = Config()
 
 
 class CNN:

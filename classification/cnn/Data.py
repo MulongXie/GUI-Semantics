@@ -3,23 +3,20 @@ import numpy as np
 from os.path import join as pjoin
 import glob
 from tqdm import tqdm
-from Config import Config
-
-cfg = Config()
 
 
 class Data:
-    def __init__(self):
+    def __init__(self, data_dir):
         self.data_num = 0
         self.images = []
         self.labels = []
         self.X_train, self.Y_train = None, None
         self.X_test, self.Y_test = None, None
 
-        self.image_shape = cfg.image_shape
-        self.class_number = cfg.class_number
-        self.class_map = cfg.class_map
-        self.DATA_PATH = cfg.DATA_PATH
+        self.image_shape = (32, 32, 3)
+        self.class_map = ['Text', 'Non-Text']
+        self.class_number = len(self.class_map)
+        self.data_path = data_dir
 
     def load_data(self, resize=True, shape=None, max_number=1000000):
         # if customize shape
@@ -29,7 +26,7 @@ class Data:
             shape = self.image_shape
 
         # load data
-        for p in glob.glob(pjoin(self.DATA_PATH, '*')):
+        for p in glob.glob(pjoin(self.data_path, '*')):
             print("*** Loading components of %s: %d ***" %(p.split('\\')[-1], int(len(glob.glob(pjoin(p, '*.png'))))))
             label = self.class_map.index(p.split('\\')[-1])  # map to index of classes
             for i, image_path in enumerate(tqdm(glob.glob(pjoin(p, '*.png'))[:max_number])):
