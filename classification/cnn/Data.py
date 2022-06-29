@@ -7,18 +7,17 @@ from tqdm import tqdm
 
 class Data:
     def __init__(self, data_dir='/home/ml/Data/rico/component'):
-        self.data_num = 0
-        self.images = []
-        self.labels = []
-        self.X_train, self.Y_train = None, None
-        self.X_test, self.Y_test = None, None
-
         self.image_shape = (32, 32, 3)
         self.class_map = ['Text Button', 'Input', 'Switch', 'Image', 'Icon', 'Checkbox']
         self.class_number = len(self.class_map)
 
         self.data_dir = data_dir
         self.class_dirs = glob(pjoin(self.data_dir, '*'))
+
+        self.images = []
+        self.labels = []
+        self.X_train, self.Y_train = None, None
+        self.X_test, self.Y_test = None, None
 
     def count_data_in_data_dir(self):
         '''
@@ -57,7 +56,7 @@ class Data:
         Y = expand(self.labels, self.class_number)
 
         # separate dataset
-        cut = int(train_data_ratio * self.data_num)
+        cut = int(train_data_ratio * len(self.images))
         self.X_train = (self.images[:cut] / 255).astype('float32')
         self.X_test = (self.images[cut:] / 255).astype('float32')
         self.Y_train = Y[:cut]

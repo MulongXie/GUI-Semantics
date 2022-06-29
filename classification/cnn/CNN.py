@@ -1,4 +1,4 @@
-import keras
+import tensorflow.keras as keras
 from keras_applications.resnet50 import ResNet50
 from keras.models import Model,load_model
 from keras.layers import Dense, Activation, Flatten, Dropout
@@ -8,25 +8,18 @@ import cv2
 
 
 class CNN:
-    def __init__(self, classifier_type, is_load=True):
-        '''
-        :param classifier_type: 'Text' or 'Noise' or 'Elements'
-        '''
-        self.data = None
+    def __init__(self, data):
+        self.data = data    # Data object
         self.model = None
 
-        self.classifier_type = classifier_type
-
-        self.image_shape = (32,32,3)
-        self.class_number = None
-        self.class_map = None
-        self.model_path = None
-        self.classifier_type = classifier_type
-        if is_load:
-            self.load(classifier_type)
+        self.image_shape = data.image_shape
+        self.class_number = data.class_number
+        self.class_map = data.class_map
+        self.model_path = '/home/ml/Model/Rico/component/component1.h5'
 
     def build_model(self, epoch_num, is_compile=True):
-        base_model = ResNet50(include_top=False, weights='imagenet', input_shape=self.image_shape)
+        base_model = ResNet50(include_top=False, weights='imagenet', input_shape=self.image_shape,
+                              backend=keras.backend, layers=keras.layers, models=keras.models, utils=keras.utils)
         for layer in base_model.layers:
             layer.trainable = False
         self.model = Flatten()(base_model.output)
@@ -37,33 +30,14 @@ class CNN:
         self.model = Model(inputs=base_model.input, outputs=self.model)
         if is_compile:
             self.model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['accuracy'])
-            self.model.fit(self.data.X_train, self.data.Y_train, batch_size=64, epochs=epoch_num, verbose=1,
-                           validation_data=(self.data.X_test, self.data.Y_test))
+            self.model.fit(self.data.X_train, self.data.Y_train, batch_size=64, epochs=epoch_num, verbose=1, validation_data=(self.data.X_test, self.data.Y_test))
 
-    def train(self, data, epoch_num=30):
-        self.data = data
+    def train(self, epoch_num=30):
         self.build_model(epoch_num)
         self.model.save(self.model_path)
         print("Trained model is saved to", self.model_path)
 
-    def load(self, classifier_type):
-        if classifier_type == 'Text':
-            self.model_path = 'E:/Mulong/Model/rico_compos/cnn-textview-2.h5'
-            self.class_map = ['Text', 'Non-Text']
-        elif classifier_type == 'Noise':
-            self.model_path = 'E:/Mulong/Model/rico_compos/cnn-noise-1.h5'
-            self.class_map = ['Noise', 'Non-Noise']
-        elif classifier_type == 'Elements':
-            # self.model_path = 'E:/Mulong/Model/rico_compos/resnet-ele14-19.h5'
-            # self.model_path = 'E:/Mulong/Model/rico_compos/resnet-ele14-28.h5'
-            # self.model_path = 'E:/Mulong/Model/rico_compos/resnet-ele14-45.h5'
-            self.model_path = cfg.CNN_PATH
-            self.class_map = cfg.element_class
-            self.image_shape = (64, 64, 3)
-        elif classifier_type == 'Image':
-            self.model_path = 'E:/Mulong/Model/rico_compos/cnn-image-1.h5'
-            self.class_map = ['Image', 'Non-Image']
-        self.class_number = len(self.class_map)
+    def load(self):
         self.model = load_model(self.model_path)
         print('Model Loaded From', self.model_path)
 
@@ -73,34 +47,25 @@ class CNN:
         x = np.array([x])
         return x
 
-    def predict(self, imgs, compos, load=False, show=False):
-        """
-        :type img_path: list of img path
-        """
-        if load:
-            self.load(self.classifier_type)
+    def predict(self, imgs, show=False):
         if self.model is None:
             print("*** No model loaded ***")
             return
         for i in range(len(imgs)):
             X = self.preprocess_img(imgs[i])
             Y = self.class_map[np.argmax(self.model.predict(X))]
-            compos[i].category = Y
             if show:
                 print(Y)
                 cv2.imshow('element', imgs[i])
                 cv2.waitKey()
 
-    def evaluate(self, data, load=True):
-        if load:
-            self.load(self.classifier_type)
+    def evaluate(self, data):
         X_test = data.X_test
         Y_test = [np.argmax(y) for y in data.Y_test]
         Y_pre = [np.argmax(y_pre) for y_pre in self.model.predict(X_test, verbose=1)]
 
         matrix = confusion_matrix(Y_test, Y_pre)
         print(matrix)
-
         TP, FP, FN = 0, 0, 0
         for i in range(len(matrix)):
             TP += matrix[i][i]
