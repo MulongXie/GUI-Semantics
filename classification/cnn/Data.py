@@ -1,12 +1,12 @@
 import cv2
 import numpy as np
 from os.path import join as pjoin
-import glob
+from glob import glob
 from tqdm import tqdm
 
 
 class Data:
-    def __init__(self, data_dir):
+    def __init__(self, data_dir='/home/ml/Data/rico/component'):
         self.data_num = 0
         self.images = []
         self.labels = []
@@ -16,7 +16,16 @@ class Data:
         self.image_shape = (32, 32, 3)
         self.class_map = ['Text', 'Non-Text']
         self.class_number = len(self.class_map)
-        self.data_path = data_dir
+        self.data_dir = data_dir
+
+    def count_data_in_data_dir(self):
+        '''
+        Check the data amount in each category under the data directory
+        '''
+        class_dirs = glob(pjoin(self.data_dir, '*'))
+        for class_dir in class_dirs:
+            c_dir = pjoin(class_dir, '*')
+            print(len(glob(c_dir)), '\t', class_dir)
 
     def load_data(self, resize=True, shape=None, max_number=1000000):
         # if customize shape
@@ -26,7 +35,7 @@ class Data:
             shape = self.image_shape
 
         # load data
-        for p in glob.glob(pjoin(self.data_path, '*')):
+        for p in glob(pjoin(self.data_path, '*')):
             print("*** Loading components of %s: %d ***" %(p.split('\\')[-1], int(len(glob.glob(pjoin(p, '*.png'))))))
             label = self.class_map.index(p.split('\\')[-1])  # map to index of classes
             for i, image_path in enumerate(tqdm(glob.glob(pjoin(p, '*.png'))[:max_number])):
