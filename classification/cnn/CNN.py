@@ -11,13 +11,14 @@ class CNN:
     def __init__(self, data):
         self.data = data    # Data object
         self.model = None
+        self.training_history = None
 
         self.image_shape = data.image_shape
-        self.class_number = data.class_number
         self.class_map = data.class_map
+        self.class_number = data.class_number
         self.model_path = '/home/ml/Model/Rico/component/component1.h5'
 
-    def build_model(self, epoch_num, is_compile=True):
+    def build_model(self, epoch_num):
         base_model = ResNet50(include_top=False, weights='imagenet', input_shape=self.image_shape,
                               backend=keras.backend, layers=keras.layers, models=keras.models, utils=keras.utils)
         for layer in base_model.layers:
@@ -25,12 +26,11 @@ class CNN:
         self.model = Flatten()(base_model.output)
         self.model = Dense(128, activation='relu')(self.model)
         self.model = Dropout(0.5)(self.model)
-        self.model = Dense(15, activation='softmax')(self.model)
+        self.model = Dense(self.class_number, activation='softmax')(self.model)
 
         self.model = Model(inputs=base_model.input, outputs=self.model)
-        if is_compile:
-            self.model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['accuracy'])
-            self.model.fit(self.data.X_train, self.data.Y_train, batch_size=64, epochs=epoch_num, verbose=1, validation_data=(self.data.X_test, self.data.Y_test))
+        self.model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['accuracy'])
+        self.training_history = self.model.fit(self.data.X_train, self.data.Y_train, batch_size=64, epochs=epoch_num, verbose=1, validation_data=(self.data.X_test, self.data.Y_test))
 
     def train(self, epoch_num=30):
         self.build_model(epoch_num)
