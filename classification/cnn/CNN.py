@@ -27,13 +27,15 @@ class CNN:
         self.model = Dense(128, activation='relu')(self.model)
         self.model = Dropout(0.5)(self.model)
         self.model = Dense(self.class_number, activation='softmax')(self.model)
-
         self.model = Model(inputs=base_model.input, outputs=self.model)
+
+    def train(self, epoch_num=30, continue_with_loading=False):
+        if continue_with_loading:
+            self.load()
+        else:
+            self.build_model(epoch_num)
         self.model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['accuracy'])
         self.training_history = self.model.fit(self.data.X_train, self.data.Y_train, batch_size=64, epochs=epoch_num, verbose=1, validation_data=(self.data.X_test, self.data.Y_test))
-
-    def train(self, epoch_num=30):
-        self.build_model(epoch_num)
         self.model.save(self.model_path)
         print("Trained model is saved to", self.model_path)
 
