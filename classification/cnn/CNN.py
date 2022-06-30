@@ -5,6 +5,7 @@ from keras.layers import Dense, Activation, Flatten, Dropout
 from sklearn.metrics import confusion_matrix
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt
 
 
 class CNN:
@@ -16,13 +17,13 @@ class CNN:
         self.image_shape = data.image_shape
         self.class_map = data.class_map
         self.class_number = data.class_number
-        self.model_path = '/home/ml/Model/Rico/component/component1.h5'
+        self.model_path = '/home/ml/Model/Rico/component/resnet50_unfrozen.h5'
 
-    def build_model(self, epoch_num):
+    def build_model(self):
         base_model = ResNet50(include_top=False, weights='imagenet', input_shape=self.image_shape,
                               backend=keras.backend, layers=keras.layers, models=keras.models, utils=keras.utils)
         for layer in base_model.layers:
-            layer.trainable = False
+            layer.trainable = True
         self.model = Flatten()(base_model.output)
         self.model = Dense(128, activation='relu')(self.model)
         self.model = Dropout(0.5)(self.model)
@@ -33,11 +34,19 @@ class CNN:
         if continue_with_loading:
             self.load()
         else:
-            self.build_model(epoch_num)
+            self.build_model()
         self.model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['accuracy'])
-        self.training_history = self.model.fit(self.data.X_train, self.data.Y_train, batch_size=64, epochs=epoch_num, verbose=1, validation_data=(self.data.X_test, self.data.Y_test))
+        training_history = self.model.fit(self.data.X_train, self.data.Y_train, batch_size=64, epochs=epoch_num, verbose=1, validation_data=(self.data.X_test, self.data.Y_test))
         self.model.save(self.model_path)
         print("Trained model is saved to", self.model_path)
+        # record training history
+        if continue_with_loading and self.training_history is not None:
+            self.training_history.history['loss'] += training_history.history['loss']
+            self.training_history.history['accuracy'] += training_history.history['accuracy']
+            self.training_history.history['val_loss'] += training_history.history['val_loss']
+            self.training_history.history['val_accuracy'] += training_history.history['val_accuracy']
+        else:
+            self.training_history = training_history
 
     def load(self):
         self.model = load_model(self.model_path)
@@ -76,3 +85,22 @@ class CNN:
         precision = TP/(TP+FP)
         recall = TP / (TP+FN)
         print("Precision:%.3f, Recall:%.3f" % (precision, recall))
+
+    def show_training_history(self):
+        # summarize history for accuracy
+        history = self.training_history
+        plt.plot(history.history['accuracy'])
+        plt.plot(history.history['val_accuracy'])
+        plt.title('model accuracy')
+        plt.ylabel('accuracy')
+        plt.xlabel('epoch')
+        plt.legend(['train', 'test'], loc='upper left')
+        plt.show()
+        # summarize history for loss
+        plt.plot(history.history['loss'])
+        plt.plot(history.history['val_loss'])
+        plt.title('model loss')
+        plt.ylabel('loss')
+        plt.xlabel('epoch')
+        plt.legend(['train', 'test'], loc='upper left')
+        plt.show()
