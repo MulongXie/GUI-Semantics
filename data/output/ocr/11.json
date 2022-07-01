@@ -6,144 +6,144 @@
     ],
     "texts": [
         {
-            "row_min": 28,
-            "column_min": 81,
             "id": 0,
             "content": "Deals",
-            "height": 18,
-            "width": 63,
+            "column_min": 81,
+            "row_min": 28,
+            "column_max": 144,
             "row_max": 46,
-            "column_max": 144
+            "width": 63,
+            "height": 18
         },
         {
-            "row_min": 96,
-            "column_min": 111,
             "id": 1,
             "content": "NEW",
-            "height": 14,
-            "width": 38,
+            "column_min": 111,
+            "row_min": 96,
+            "column_max": 149,
             "row_max": 110,
-            "column_max": 149
+            "width": 38,
+            "height": 14
         },
         {
-            "row_min": 168,
-            "column_min": 75,
             "id": 2,
             "content": "Lindsay",
-            "height": 14,
-            "width": 54,
+            "column_min": 75,
+            "row_min": 168,
+            "column_max": 129,
             "row_max": 182,
-            "column_max": 129
+            "width": 54,
+            "height": 14
         },
         {
-            "row_min": 188,
-            "column_min": 76,
             "id": 3,
             "content": "Posted -172 minutes ago",
-            "height": 12,
-            "width": 142,
+            "column_min": 76,
+            "row_min": 188,
+            "column_max": 218,
             "row_max": 200,
-            "column_max": 218
+            "width": 142,
+            "height": 12
         },
         {
-            "row_min": 422,
-            "column_min": 75,
             "id": 4,
-            "content": "Julie",
-            "height": 12,
-            "width": 34,
-            "row_max": 434,
-            "column_max": 109
+            "content": "BonTon : Pink Rose Dresses",
+            "column_min": 198,
+            "row_min": 227,
+            "column_max": 475,
+            "row_max": 243,
+            "width": 277,
+            "height": 16
         },
         {
-            "row_min": 442,
-            "column_min": 76,
             "id": 5,
-            "content": "Posted 147 minutes ago",
-            "height": 12,
-            "width": 142,
-            "row_max": 454,
-            "column_max": 218
+            "content": "$ 17 Shipped",
+            "column_min": 198,
+            "row_min": 251,
+            "column_max": 321,
+            "row_max": 273,
+            "width": 123,
+            "height": 22
         },
         {
-            "row_min": 675,
-            "column_min": 76,
             "id": 6,
-            "content": "Chris",
-            "height": 13,
-            "width": 35,
-            "row_max": 688,
-            "column_max": 111
+            "content": "Julie",
+            "column_min": 75,
+            "row_min": 422,
+            "column_max": 109,
+            "row_max": 434,
+            "width": 34,
+            "height": 12
         },
         {
-            "row_min": 696,
-            "column_min": 76,
             "id": 7,
-            "content": "Posted -106 minutes ago",
-            "height": 12,
+            "content": "Posted 147 minutes ago",
+            "column_min": 76,
+            "row_min": 442,
+            "column_max": 218,
+            "row_max": 454,
             "width": 142,
-            "row_max": 708,
-            "column_max": 218
+            "height": 12
         },
         {
-            "row_min": 96,
-            "column_min": 352,
             "id": 8,
             "content": "POPULAR",
-            "height": 14,
-            "width": 78,
+            "column_min": 352,
+            "row_min": 96,
+            "column_max": 430,
             "row_max": 110,
-            "column_max": 430
+            "width": 78,
+            "height": 14
         },
         {
-            "row_min": 227,
-            "column_min": 198,
             "id": 9,
-            "content": "BonTon : Pink Rose Dresses",
-            "height": 16,
-            "width": 277,
-            "row_max": 243,
-            "column_max": 475
-        },
-        {
-            "row_min": 251,
-            "column_min": 198,
-            "id": 10,
-            "content": "$ 17 Shipped",
-            "height": 22,
-            "width": 123,
-            "row_max": 273,
-            "column_max": 321
-        },
-        {
-            "row_min": 479,
-            "column_min": 197,
-            "id": 11,
             "content": "WHBM : Extra 40 % Off Sale",
-            "height": 19,
-            "width": 268,
+            "column_min": 197,
+            "row_min": 479,
+            "column_max": 465,
             "row_max": 498,
-            "column_max": 465
+            "width": 268,
+            "height": 19
         },
         {
-            "row_min": 733,
-            "column_min": 198,
+            "id": 10,
+            "content": "Chris",
+            "column_min": 76,
+            "row_min": 675,
+            "column_max": 111,
+            "row_max": 688,
+            "width": 35,
+            "height": 13
+        },
+        {
+            "id": 11,
+            "content": "Posted -106 minutes ago",
+            "column_min": 76,
+            "row_min": 696,
+            "column_max": 218,
+            "row_max": 708,
+            "width": 142,
+            "height": 12
+        },
+        {
             "id": 12,
             "content": "12 Ribbed Cotton Tank Tops",
-            "height": 21,
-            "width": 284,
+            "column_min": 198,
+            "row_min": 733,
+            "column_max": 482,
             "row_max": 754,
-            "column_max": 482
+            "width": 284,
+            "height": 21
         },
         {
-            "row_min": 759,
-            "column_min": 199,
             "id": 13,
             "content": "$ 25 Shipped",
-            "height": 23,
-            "width": 122,
+            "column_min": 199,
+            "row_min": 759,
+            "column_max": 321,
             "row_max": 782,
-            "column_max": 321
+            "width": 122,
+            "height": 23
         }
     ]
 }

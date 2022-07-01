@@ -45,7 +45,7 @@ class DataInspector:
             target_file = pjoin(self.json_directory, name + target_file_type)
         return target_file
 
-    def load_gui_img_and_element(self, img_file, json_file, show=False, save_as_df=False, save_element_clips=False, output_compo_dir=None):
+    def load_gui_img_and_element(self, img_file, json_file, show=False, save_as_df=False):
         '''
         Inspect GUI by visualizing the image and printing out the json file of attributes
         '''
@@ -56,5 +56,9 @@ class DataInspector:
             self.current_gui.visualize_elements()
         if save_as_df:
             self.current_gui.save_element_as_csv()
-        if save_element_clips:
-            self.current_gui.save_elements_clips_by_compo_label(output_compo_dir, self.element_clips_count)
+
+    def save_elements_clips_by_compo_label(self, output_compo_dir):
+        '''
+        Save Element clips into folders according to the ComponentLabel
+        '''
+        self.current_gui.save_elements_clips_by_compo_label(output_compo_dir, self.element_clips_count)

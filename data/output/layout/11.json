@@ -1,104 +1,104 @@
 [
     {
-        "id": "b-5",
+        "id": "b-1",
+        "class": "Block",
         "children": [
             {
-                "id": "b-6",
+                "id": "b-2",
+                "class": "Block",
                 "children": [
                     {
                         "id": "c-1",
-                        "text_content": null,
                         "class": "Compo",
+                        "text_content": null,
                         "location": {
-                            "right": 45,
                             "left": 21,
-                            "bottom": 30,
-                            "top": 25
+                            "right": 45,
+                            "top": 25,
+                            "bottom": 30
                         }
                     },
                     {
                         "id": "c-2",
-                        "text_content": null,
                         "class": "Compo",
+                        "text_content": null,
                         "location": {
-                            "right": 46,
                             "left": 21,
-                            "bottom": 43,
-                            "top": 33
+                            "right": 46,
+                            "top": 33,
+                            "bottom": 43
                         }
                     }
                 ],
                 "location": {
-                    "right": 46,
                     "left": 21,
-                    "bottom": 43,
-                    "top": 25
-                },
-                "class": "Block"
+                    "right": 46,
+                    "top": 25,
+                    "bottom": 43
+                }
             },
             {
                 "id": "c-9",
-                "text_content": "Deals",
                 "class": "Text",
+                "text_content": "Deals",
                 "location": {
-                    "right": 137,
                     "left": 77,
-                    "bottom": 43,
-                    "top": 26
+                    "right": 137,
+                    "top": 26,
+                    "bottom": 43
                 }
             },
             {
                 "id": "c-0",
-                "text_content": null,
                 "class": "Compo",
+                "text_content": null,
                 "location": {
-                    "right": 480,
                     "left": 457,
-                    "bottom": 46,
-                    "top": 24
+                    "right": 480,
+                    "top": 24,
+                    "bottom": 46
                 }
             }
         ],
         "location": {
-            "right": 480,
             "left": 21,
-            "bottom": 46,
-            "top": 24
-        },
-        "class": "Block"
+            "right": 480,
+            "top": 24,
+            "bottom": 46
+        }
     },
     {
-        "id": "b-7",
+        "id": "b-3",
+        "class": "Block",
         "children": [
             {
                 "id": "c-10",
-                "text_content": "NEW",
                 "class": "Text",
+                "text_content": "NEW",
                 "location": {
-                    "right": 142,
                     "left": 106,
-                    "bottom": 105,
-                    "top": 91
+                    "right": 142,
+                    "top": 91,
+                    "bottom": 105
                 }
             },
             {
-                "id": "c-16",
-                "text_content": "POPULAR",
+                "id": "c-15",
                 "class": "Text",
+                "text_content": "POPULAR",
                 "location": {
-                    "right": 410,
                     "left": 336,
-                    "bottom": 105,
-                    "top": 91
+                    "right": 410,
+                    "top": 91,
+                    "bottom": 105
                 }
             }
         ],
         "location": {
-            "right": 410,
             "left": 106,
-            "bottom": 105,
-            "top": 91
-        },
-        "class": "Block"
+            "right": 410,
+            "top": 91,
+            "bottom": 105
+        }
     }
 ]
