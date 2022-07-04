@@ -82,6 +82,21 @@ class GUIData:
             cv2.imwrite(pjoin(compo_cls_dir, clip_name), clip)
         print(elements_count)
 
+    def save_icon_by_icon_class(self, output_dir, icon_count):
+        for i, ele in enumerate(self.elements):
+            if ele['componentLabel'] == 'Icon' and 'iconClass' in ele:
+                bounds = ele['bounds']
+                clip = self.img[bounds[1]: bounds[3], bounds[0]: bounds[2]]
+                compo_cls_dir = pjoin(output_dir, ele['iconClass'])
+                if ele['iconClass'] not in icon_count:
+                    os.makedirs(compo_cls_dir, exist_ok=True)
+                    icon_count[ele['iconClass']] = 1
+                else:
+                    icon_count[ele['iconClass']] += 1
+                clip_name = str(self.gui_name) + '-' + str(i) + '.jpg'
+                cv2.imwrite(pjoin(compo_cls_dir, clip_name), clip)
+        print(icon_count)
+
     def visualize_elements(self):
         board = self.img.copy()
         for ele in self.elements:

@@ -15,7 +15,8 @@ class DataInspector:
         self.img_files = None
         self.json_files = None
 
-        self.element_clips_count = {}  # {'componentLabel': No_clips}
+        self.element_class_count = {}   # {'componentLabel': No_clips}
+        self.icon_class_count = {}      # {'iconClass': No_clips}
         self.current_gui = None
 
     def get_all_img_files(self, img_type='.jpg', sort_files_by_name=True):
@@ -57,8 +58,14 @@ class DataInspector:
         if save_as_df:
             self.current_gui.save_element_as_csv()
 
-    def save_elements_clips_by_compo_label(self, output_compo_dir):
+    def save_elements_clips_by_compo_label(self, output_dir):
         '''
         Save Element clips into folders according to the ComponentLabel
         '''
-        self.current_gui.save_elements_clips_by_compo_label(output_compo_dir, self.element_clips_count)
+        self.current_gui.save_elements_clips_by_compo_label(output_dir, self.element_class_count)
+
+    def save_icons_clips_by_icon_class(self, output_dir):
+        '''
+        Save Icon clips into folders according to the iconClass
+        '''
+        self.current_gui.save_icon_by_icon_class(output_dir, self.icon_class_count)
