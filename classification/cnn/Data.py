@@ -6,26 +6,47 @@ from tqdm import tqdm
 
 
 class Data:
-    def __init__(self, data_dir='/home/ml/Data/rico/component'):
-        self.image_shape = (32, 32, 3)
-        self.class_map = ['Text Button', 'Input', 'Switch', 'Image', 'Icon', 'Checkbox']
+    def __init__(self, data_dir=None, cls=None):
+        '''
+        :param data_dir: Data root directory
+        :param cls: 'compo' or 'icon', the type of classification
+        '''
+        self.cls_type = cls
+        if cls == 'compo':
+            self.data_dir = '/home/ml/Data/rico/component'
+            self.class_map = ['Text Button', 'Input', 'Switch', 'Image', 'Icon', 'Checkbox']
+        elif cls == 'icon':
+            self.data_dir = '/home/ml/Data/rico/icon'
+            self.class_map = [cls.replace('\\', '/').split('/')[-1] for cls in glob(pjoin(self.data_dir, '*'))]
+        else:
+            self.data_dir = data_dir
+            self.class_map = []
         self.class_number = len(self.class_map)
-
-        self.data_dir = data_dir
         self.class_dirs = glob(pjoin(self.data_dir, '*'))
 
+        self.image_shape = (32, 32, 3)
         self.images = []
         self.labels = []
         self.X_train, self.Y_train = None, None
         self.X_test, self.Y_test = None, None
 
-    def count_data_in_data_dir(self):
+    def get_class_map_from_directory(self):
+        classes = glob(pjoin(self.data_dir, '*'))
+        self.class_map = [cls.replace('\\', '/').split('/')[-1] for cls in classes]
+        self.class_number = len(self.class_map)
+        self.count_data_in_data_dir()
+
+    def count_data_in_data_dir(self, match_cls_map=True):
         '''
         Check the data amount in each category under the data directory
         '''
         for class_dir in self.class_dirs:
             c_dir = pjoin(class_dir, '*')
-            print(len(glob(c_dir)), '\t', class_dir)
+            if match_cls_map:
+                if class_dir.replace('\\', '/').split('/')[-1] in self.class_map:
+                    print(len(glob(c_dir)), '\t', class_dir)
+            else:
+                print(len(glob(c_dir)), '\t', class_dir)
 
     def load_data_in_class_map(self):
         for class_dir in self.class_dirs:
@@ -61,6 +82,5 @@ class Data:
         self.X_test = (self.images[cut:] / 255).astype('float32')
         self.Y_train = Y[:cut]
         self.Y_test = Y[cut:]
-
         print('X_train:%d, Y_train:%d' % (len(self.X_train), len(self.Y_train)))
         print('X_test:%d, Y_test:%d' % (len(self.X_test), len(self.Y_test)))

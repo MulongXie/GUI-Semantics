@@ -1,3 +1,5 @@
+import json
+from keras.callbacks import History
 import tensorflow.keras as keras
 from keras_applications.resnet50 import ResNet50
 from keras.models import Model,load_model
@@ -5,40 +7,52 @@ from keras.layers import Dense, Activation, Flatten, Dropout
 from sklearn.metrics import confusion_matrix
 import numpy as np
 import cv2
+import os
 import matplotlib.pyplot as plt
+from os.path import join as pjoin
 
 
 class CNN:
     def __init__(self, data):
         self.data = data    # Data object
         self.model = None
-        self.training_history = None
+        self.training_history = History()
 
         self.image_shape = data.image_shape
         self.class_map = data.class_map
         self.class_number = data.class_number
-        self.model_path = '/home/ml/Model/Rico/component/resnet50_unfrozen.h5'
 
-    def build_model(self):
+        if data.cls_type == 'compo':
+            self.model_path = '/home/ml/Model/Rico/component/resnet50_unfrozen_compo.h5'
+            self.history_path = '/home/ml/Model/Rico/component/resnet50_unfrozen_compo_history.json'
+        elif data.cls_type == 'icon':
+            self.model_path = '/home/ml/Model/Rico/icon/resnet50_unfrozen_icon.h5'
+            self.history_path = '/home/ml/Model/Rico/icon/resnet50_unfrozen_icon_history.json'
+        else:
+            self.model_path = None
+            self.history_path = None
+
+    def build_model(self, frozen=False):
         base_model = ResNet50(include_top=False, weights='imagenet', input_shape=self.image_shape,
                               backend=keras.backend, layers=keras.layers, models=keras.models, utils=keras.utils)
         for layer in base_model.layers:
-            layer.trainable = True
+            layer.trainable = frozen
         self.model = Flatten()(base_model.output)
         self.model = Dense(128, activation='relu')(self.model)
         self.model = Dropout(0.5)(self.model)
         self.model = Dense(self.class_number, activation='softmax')(self.model)
         self.model = Model(inputs=base_model.input, outputs=self.model)
 
-    def train(self, epoch_num=30, continue_with_loading=False):
+    def train(self, epoch_num=30, continue_with_loading=False, frozen=False):
         if continue_with_loading:
             self.load()
         else:
-            self.build_model()
+            self.build_model(frozen=frozen)
         self.model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['accuracy'])
         training_history = self.model.fit(self.data.X_train, self.data.Y_train, batch_size=64, epochs=epoch_num, verbose=1, validation_data=(self.data.X_test, self.data.Y_test))
         self.model.save(self.model_path)
         print("Trained model is saved to", self.model_path)
+        self.save_training_history()
         # record training history
         if continue_with_loading and self.training_history is not None:
             self.training_history.history['loss'] += training_history.history['loss']
@@ -51,6 +65,9 @@ class CNN:
     def load(self):
         self.model = load_model(self.model_path)
         print('Model Loaded From', self.model_path)
+        if os.path.exists(self.history_path):
+            self.training_history.history = json.load(open(self.history_path))
+            print('Training History Loaded From', self.history_path)
 
     def preprocess_img(self, image):
         image = cv2.resize(image, self.image_shape[:2])
@@ -71,11 +88,11 @@ class CNN:
                 cv2.waitKey()
 
     def evaluate(self, data):
-        X_test = data.X_test
-        Y_test = [np.argmax(y) for y in data.Y_test]
-        Y_pre = [np.argmax(y_pre) for y_pre in self.model.predict(X_test, verbose=1)]
+        x_test = data.X_test
+        y_test = [np.argmax(y) for y in data.Y_test]
+        y_pre = [np.argmax(y_pre) for y_pre in self.model.predict(x_test, verbose=1)]
 
-        matrix = confusion_matrix(Y_test, Y_pre)
+        matrix = confusion_matrix(y_test, y_pre)
         print(matrix)
         TP, FP, FN = 0, 0, 0
         for i in range(len(matrix)):
@@ -85,6 +102,10 @@ class CNN:
         precision = TP/(TP+FP)
         recall = TP / (TP+FN)
         print("Precision:%.3f, Recall:%.3f" % (precision, recall))
+
+    def save_training_history(self):
+        json.dump(self.training_history.history, open(self.history_path, 'w'), indent=4)
+        print('Save training history to', self.history_path)
 
     def show_training_history(self):
         # summarize history for accuracy
