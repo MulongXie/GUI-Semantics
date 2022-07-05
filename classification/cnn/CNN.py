@@ -72,22 +72,50 @@ class CNN:
     def preprocess_img(self, image):
         image = cv2.resize(image, self.image_shape[:2])
         x = (image / 255).astype('float32')
-        x = np.array([x])
         return x
 
-    def predict(self, img_files, show=False):
-        if self.model is None:
-            print("*** No model loaded ***")
-            return
+    def predict_img_files(self, img_files, show=False):
+        '''
+        Predict class for image files
+        :param img_files: list of image file paths
+        :param show: Boolean
+        '''
+        orgs = []
+        images = []
         for i in range(len(img_files)):
             img = cv2.imread(img_files[i])
-            X = self.preprocess_img(img)
-            Y = self.class_map[np.argmax(self.model.predict(X))]
-            if show:
-                print(Y)
-                cv2.imshow('element', img)
-                cv2.waitKey()
-                cv2.destroyWindow('element')
+            orgs.append(img)
+            images.append(self.preprocess_img(img))
+        predictions = self.model.predict(images)
+        labels = [self.class_map[np.argmax(pred)] for pred in predictions]
+        if show:
+            for i in range(len(orgs)):
+                print(labels[i])
+                cv2.imshow('img', orgs[i])
+                key = cv2.waitKey()
+                if key == ord('q'):
+                    break
+            cv2.destroyWindow('img')
+        return labels
+
+    def predict_images(self, images, show=False):
+        '''
+        Predict class for cv2 images
+        :param images: list of cv2 images
+        :param show: Boolean
+        '''
+        images_proc = [self.preprocess_img(img) for img in images]
+        predictions = self.model.predict(images_proc)
+        labels = [self.class_map[np.argmax(pred)] for pred in predictions]
+        if show:
+            for i in range(len(images)):
+                print(labels[i])
+                cv2.imshow('img', images[i])
+                key = cv2.waitKey()
+                if key == ord('q'):
+                    break
+            cv2.destroyWindow('img')
+        return labels
 
     def evaluate(self, data):
         x_test = data.X_test
