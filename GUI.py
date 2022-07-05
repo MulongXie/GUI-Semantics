@@ -5,6 +5,7 @@ import json
 
 from detection.Detector import Detector
 from grouping.Grouper import Grouper
+from classification.ElementClassifier import ElementClassifier
 
 
 class GUI:
@@ -18,6 +19,7 @@ class GUI:
 
         self.Detector = Detector(self.img_file, img_resize_longest_side, self.output_dir)            # GUI Element Detection
         self.Grouper = Grouper(self.img_file, self.Detector.detection_result_file, self.output_dir)  # GUI Element Grouping (Layout)
+        self.Classifier = ElementClassifier()
 
         self.detection_result_img = {'text': None, 'non-text': None, 'merge': None}     # visualized detection result
         self.grouping_result_img = {'group': None, 'pair': None, 'list': None}          # visualized detection result
@@ -31,6 +33,14 @@ class GUI:
         self.Detector.detect_element(is_ocr, is_non_text, is_merge)
         if show:
             self.visualize_element_detection()
+
+    '''
+    **********************************
+    *** GUI Element Classification ***
+    **********************************
+    '''
+    def classify_element(self):
+        pass
 
     '''
     **************************
