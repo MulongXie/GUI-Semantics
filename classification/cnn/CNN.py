@@ -86,6 +86,7 @@ class CNN:
                 print(Y)
                 cv2.imshow('element', imgs[i])
                 cv2.waitKey()
+        cv2.destroyWindow('element')
 
     def evaluate(self, data):
         x_test = data.X_test

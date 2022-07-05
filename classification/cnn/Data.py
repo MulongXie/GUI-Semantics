@@ -84,9 +84,3 @@ class Data:
         self.Y_test = Y[cut:]
         print('X_train:%d, Y_train:%d' % (len(self.X_train), len(self.Y_train)))
         print('X_test:%d, Y_test:%d' % (len(self.X_test), len(self.Y_test)))
-
-    def load_imagenet_class(self, imgnet_cls_file='imagenet1000.txt'):
-        img_net_cls = []
-        for line in open(imgnet_cls_file, 'r'):
-            img_net_cls.append(line.split(':')[-1][:-1].replace('\'', '').replace(',', ''))
-        return img_net_cls
