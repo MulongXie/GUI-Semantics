@@ -75,18 +75,19 @@ class CNN:
         x = np.array([x])
         return x
 
-    def predict(self, imgs, show=False):
+    def predict(self, img_files, show=False):
         if self.model is None:
             print("*** No model loaded ***")
             return
-        for i in range(len(imgs)):
-            X = self.preprocess_img(imgs[i])
+        for i in range(len(img_files)):
+            img = cv2.imread(img_files[i])
+            X = self.preprocess_img(img)
             Y = self.class_map[np.argmax(self.model.predict(X))]
             if show:
                 print(Y)
-                cv2.imshow('element', imgs[i])
+                cv2.imshow('element', img)
                 cv2.waitKey()
-        cv2.destroyWindow('element')
+                cv2.destroyWindow('element')
 
     def evaluate(self, data):
         x_test = data.X_test
