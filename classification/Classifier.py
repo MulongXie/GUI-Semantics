@@ -3,7 +3,7 @@ from classification.cnn.CNN import CNN
 from classification.cnn.ImgClassifier import ImgClassifier
 
 
-class ElementClassifier:
+class Classifier:
     def __init__(self):
         self.classifier_compo = None
         self.classifier_icon = None
@@ -55,6 +55,6 @@ class ElementClassifier:
 
 
 if __name__ == '__main__':
-    cls = ElementClassifier()
+    cls = Classifier()
     cls.load_classifiers()
     cls.predict_img_files(['data/a1.jpg', 'data/a2.jpg'], opt='image', show=True)
