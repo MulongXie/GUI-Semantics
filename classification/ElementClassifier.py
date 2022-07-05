@@ -1,6 +1,6 @@
-from cnn.Data import Data
-from cnn.CNN import CNN
-from cnn.ImgClassifier import ImgClassifier
+from classification.cnn.Data import Data
+from classification.cnn.CNN import CNN
+from classification.cnn.ImgClassifier import ImgClassifier
 
 
 class ElementClassifier:
@@ -52,3 +52,9 @@ class ElementClassifier:
             self.classifier_icon.predict_img_files(img_files, show)
         elif opt == 'image':
             self.classifier_img.predict_img_files(img_files, show)
+
+
+if __name__ == '__main__':
+    cls = ElementClassifier()
+    cls.load_classifiers()
+    cls.predict_img_files(['data/a1.jpg', 'data/a2.jpg'], opt='image', show=True)
