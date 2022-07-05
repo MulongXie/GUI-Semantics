@@ -19,8 +19,9 @@ class ImgClassifier:
         self.image_net_file = image_net_file
         self.image_net_cls = [line.split(':')[-1][:-1].replace('\'', '').replace(',', '') for line in open(image_net_file, 'r')]
         self.resnet = ResNet50(backend=keras.backend, layers=keras.layers, models=keras.models, utils=keras.utils)
+        print('*** Load ResNet50 pretrained on ImageNet ***')
 
-    def predict_image_files(self, img_files, show=False):
+    def predict_img_files(self, img_files, show=False):
         '''
         Predict class for image files
         :param img_files: list of image file paths

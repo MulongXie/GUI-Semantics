@@ -64,7 +64,7 @@ class CNN:
 
     def load(self):
         self.model = load_model(self.model_path)
-        print('Model Loaded From', self.model_path)
+        print('*** Model Loaded From', self.model_path, '***')
         if os.path.exists(self.history_path):
             self.training_history.history = json.load(open(self.history_path))
             print('Training History Loaded From', self.history_path)
@@ -86,7 +86,7 @@ class CNN:
             img = cv2.imread(img_files[i])
             orgs.append(img)
             images.append(self.preprocess_img(img))
-        predictions = self.model.predict(images)
+        predictions = self.model.predict(np.array(images))
         labels = [self.class_map[np.argmax(pred)] for pred in predictions]
         if show:
             for i in range(len(orgs)):
