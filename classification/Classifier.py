@@ -10,15 +10,15 @@ class Classifier:
         self.classifier_img = None
 
     def load_classifiers(self, compo=True, icon=True, img=True):
-        if compo:
+        if compo and self.classifier_compo is None:
             data = Data(cls='compo')
             self.classifier_compo = CNN(data)
             self.classifier_compo.load()
-        if icon:
+        if icon and self.classifier_icon is None:
             data = Data(cls='icon')
             self.classifier_icon = CNN(data)
             self.classifier_icon.load()
-        if img:
+        if img and self.classifier_img is None:
             self.classifier_img = ImgClassifier()
 
     def predict_images(self, images, opt='compo', show=False):

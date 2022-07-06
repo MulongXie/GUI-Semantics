@@ -61,22 +61,56 @@ class GUI:
     *** GUI Element Classification ***
     **********************************
     '''
-    def classify_element(self):
-        self.Classifier.load_classifiers()
-        # separate text and non-text compos
+    def classify_element(self, compo_class=True, icon_class=True, image_class=True):
+        self.Classifier.load_classifiers(compo=compo_class, icon=icon_class, img=image_class)
+        if compo_class:
+            self.classify_compo_class()
+        if icon_class:
+            self.classify_icon_class()
+        if image_class:
+            self.classify_img_class()
+
+    def classify_compo_class(self):
+        '''
+        Classify non-text element's compo_class: ['Text Button', 'Input', 'Switch', 'Image', 'Icon', 'Checkbox']
+        :saveto: element.attributes.compo_class
+        '''
         compos = []
-        texts = []
         for ele in self.elements:
             if ele.attributes.element_class == 'Compo':
                 compos.append(ele)
-            elif ele.attributes.element_class == 'Text':
-                texts.append(ele)
-
-        # 1. classify compo class
         compos_clips = [compo.clip for compo in compos]
         labels = self.Classifier.predict_images(compos_clips, opt='compo')
         for i, compo in enumerate(compos):
             compo.attributes.compo_class = labels[i]
+
+    def classify_icon_class(self):
+        '''
+        Classify icon element's icon_class: [99 classes]
+        :saveto: element.attributes.icon_class
+        '''
+        icons = []
+        for ele in self.elements:
+            if ele.attributes.compo_class == 'Icon':
+                icons.append(ele)
+        icons_clips = [icon.clip for icon in icons]
+        labels = self.Classifier.predict_images(icons_clips, opt='icon')
+        for i, icon in enumerate(icons):
+            icon.attributes.icon_class = labels[i]
+
+    def classify_img_class(self):
+        '''
+        Classify image element's icon_class: [imageNet 1k classes]
+        :saveto: element.attributes.image_class
+        '''
+        imgs = []
+        for ele in self.elements:
+            if ele.attributes.compo_class == 'Image':
+                imgs.append(ele)
+        imgs_clips = [img.clip for img in imgs]
+        labels = self.Classifier.predict_images(imgs_clips, opt='image')
+        for i, img in enumerate(imgs):
+            img.attributes.image_class = labels[i]
 
     '''
     **************************

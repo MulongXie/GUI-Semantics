@@ -67,7 +67,7 @@ class CNN:
         print('*** Model Loaded From', self.model_path, '***')
         if os.path.exists(self.history_path):
             self.training_history.history = json.load(open(self.history_path))
-            print('Training History Loaded From', self.history_path)
+            # print('Training History Loaded From', self.history_path)
 
     def preprocess_img(self, image):
         image = cv2.resize(image, self.image_shape[:2])
