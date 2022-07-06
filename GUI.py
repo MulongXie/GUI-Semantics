@@ -40,6 +40,10 @@ class GUI:
         if show:
             self.visualize_element_detection()
 
+    def load_detection_result(self):
+        self.Detector.load_detection_result()
+        self.cvt_elements()
+
     def cvt_elements(self):
         '''
         Convert detection result to Element objects
