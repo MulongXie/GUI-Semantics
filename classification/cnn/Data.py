@@ -48,6 +48,21 @@ class Data:
             else:
                 print(len(glob(c_dir)), '\t', class_dir)
 
+    def view_images_in_class(self, class_name, batch_num=5):
+        class_dir = pjoin(self.data_dir, class_name)
+        image_files = glob(pjoin(class_dir, '*'))
+        i = 0
+        num = len(image_files)
+        while i < num:
+            for k, j in enumerate(range(i, i + batch_num)):
+                img = cv2.imread(image_files[j])
+                cv2.imshow(class_name + str(k), img)
+            key = cv2.waitKey()
+            if key == ord('q'):
+                break
+            i += batch_num
+        cv2.destroyAllWindows()
+
     def load_data_in_class_map(self):
         for class_dir in self.class_dirs:
             cls = class_dir.replace('\\', '/').split('/')[-1]
