@@ -24,7 +24,8 @@ class GUI:
         self.img_resized = self.Detector.img_resized  # resized image by img_reshape
 
         self.elements = []  # list of Element objects
-        self.color_map = {'Compo': (0,255,0), 'Text':(0,0,255)}
+        self.color_map = {'Compo': (0,255,0), 'Text':(0,0,255),  # element class
+                          'Text Button':(0,0,255), 'Input':(166,0,0), 'Switch':(166,166,0), 'Image':(0,166,166), 'Icon':(255,255,0), 'Checkbox':(255,0,166)}  # compo class
 
         self.detection_result_img = {'text': None, 'non-text': None, 'merge': None}     # visualized detection result
         self.grouping_result_img = {'group': None, 'pair': None, 'list': None}          # visualized detection result
@@ -38,7 +39,7 @@ class GUI:
         self.Detector.detect_element(is_ocr, is_non_text, is_merge)
         self.cvt_elements()
         if show:
-            self.visualize_element_detection()
+            self.show_element_detection()
 
     def load_detection_result(self):
         self.Detector.load_detection_result()
@@ -123,23 +124,45 @@ class GUI:
         self.Grouper.load_compos(self.Detector.compos_json)
         self.Grouper.recognize_layout()
         if show:
-            self.visualize_layout_recognition()
+            self.show_layout_recognition()
 
     '''
     *********************
     *** Visualization ***
     *********************
     '''
-    def visualize_element_detection(self):
+    def show_element_detection(self):
         self.Detector.visualize_element_detection()
 
-    def visualize_layout_recognition(self):
+    def show_layout_recognition(self):
         self.Grouper.visualize_layout_recognition()
 
-    def draw_elements(self):
+    def show_elements(self):
         board = self.img_resized.copy()
         for element in self.elements:
             element.draw_element(board, self.color_map[element.attributes.element_class])
         cv2.imshow('elements', board)
         cv2.waitKey()
         cv2.destroyWindow('elements')
+
+    def show_element_classes(self):
+        board_ele_class = self.img_resized.copy()
+        board_compo_class = self.img_resized.copy()
+        board_icon_class = self.img_resized.copy()
+        board_img_class = self.img_resized.copy()
+
+        for element in self.elements:
+            element.draw_element(board_ele_class, self.color_map[element.attributes.element_class], text=element.attributes.element_class)
+            if element.attributes.compo_class is not None:
+                element.draw_element(board_compo_class, self.color_map[element.attributes.compo_class], text=element.attributes.compo_class)
+            if element.attributes.icon_class is not None:
+                element.draw_element(board_icon_class, self.color_map['Icon'], text=element.attributes.icon_class)
+            if element.attributes.image_class is not None:
+                element.draw_element(board_img_class, self.color_map['Image'], text=element.attributes.image_class)
+
+        cv2.imshow('element class', board_ele_class)
+        cv2.imshow('compo class', board_compo_class)
+        cv2.imshow('icon class', board_icon_class)
+        cv2.imshow('image class', board_img_class)
+        cv2.waitKey()
+        cv2.destroyAllWindows()

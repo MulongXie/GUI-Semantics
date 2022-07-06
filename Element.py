@@ -36,8 +36,10 @@ class Element:
     def get_clip(self, img):
         self.clip = img[self.bounding.top: self.bounding.bottom, self.bounding.left: self.bounding.right]
 
-    def draw_element(self, img, color, show=False):
+    def draw_element(self, img, color, text=None, show=False):
         cv2.rectangle(img, (self.bounding.left, self.bounding.top), (self.bounding.right, self.bounding.bottom), color, 2)
+        if text is not None:
+            cv2.putText(img, text, (self.bounding.left+5, self.bounding.top+20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
         if show:
             cv2.imshow('element', img)
             cv2.waitKey()
