@@ -31,11 +31,11 @@ class Classifier:
         :param show: Boolean
         '''
         if opt == 'compo':
-            self.classifier_compo.predict_images(images, show)
+            return self.classifier_compo.predict_images(images, show)
         elif opt == 'icon':
-            self.classifier_icon.predict_images(images, show)
+            return self.classifier_icon.predict_images(images, show)
         elif opt == 'image':
-            self.classifier_img.predict_images(images, show)
+            return self.classifier_img.predict_images(images, show)
 
     def predict_img_files(self, img_files, opt='compo', show=False):
         '''
@@ -47,11 +47,11 @@ class Classifier:
         :param show: Boolean
         '''
         if opt == 'compo':
-            self.classifier_compo.predict_img_files(img_files, show)
+            return self.classifier_compo.predict_img_files(img_files, show)
         elif opt == 'icon':
-            self.classifier_icon.predict_img_files(img_files, show)
+            return self.classifier_icon.predict_img_files(img_files, show)
         elif opt == 'image':
-            self.classifier_img.predict_img_files(img_files, show)
+            return self.classifier_img.predict_img_files(img_files, show)
 
 
 if __name__ == '__main__':

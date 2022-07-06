@@ -49,6 +49,7 @@ class GUI:
             pos = compo['position']
             element = Element(compo['id'], pos['column_min'], pos['row_min'], pos['column_max'], pos['row_max'])
             element.attributes.element_class = compo['class']
+            element.get_clip(self.img_resized)
             self.elements.append(element)
 
     '''
@@ -57,7 +58,20 @@ class GUI:
     **********************************
     '''
     def classify_element(self):
-        pass
+        self.Classifier.load_classifiers()
+        # separate text and non-text compos
+        compos = []
+        texts = []
+        for ele in self.elements:
+            if ele.attributes.element_class == 'Compo':
+                compos.append(ele)
+            elif ele.attributes.element_class == 'Text':
+                texts.append(ele)
+        # 1. classify compo class
+        compos_clips = [compo.clip for compo in compos]
+        labels = self.Classifier.predict_images(compos_clips, opt='compo')
+        for i, compo in enumerate(compos):
+            compo.attribute.compo_class = labels[i]
 
     '''
     **************************

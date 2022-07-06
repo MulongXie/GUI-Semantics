@@ -4,14 +4,15 @@ import cv2
 class ElementAttributes:
     def __init__(self):
         # for non-text
-        self.element_class = None
-        self.icon_class = None
-        self.image_class = None
-        self.clickable = False
+        self.element_class = None   # ['Compo', 'Text']
+        self.compo_class = None     # ['Text Button', 'Input', 'Switch', 'Image', 'Icon', 'Checkbox']
+        self.icon_class = None      # [99 classes]
+        self.image_class = None     # [imageNet 1k classes]
+        self.clickable = False      # Boolean
         # for text
-        self.text_content = None
-        self.text_ner = None
-        self.text_bold = False
+        self.text_content = None    # Text content
+        self.text_ner = None        # NER ['Name', 'Date', 'Time', 'Location']
+        self.text_bold = False      # Boolean
 
 
 class BoundingBox:
@@ -30,6 +31,10 @@ class Element:
         self.id = id
         self.attributes = ElementAttributes()
         self.bounding = BoundingBox(left, top, right, bottom)
+        self.clip = None
+
+    def get_clip(self, img):
+        self.clip = img[self.bounding.top: self.bounding.bottom, self.bounding.left: self.bounding.right]
 
     def draw_element(self, img, color, show=False):
         cv2.rectangle(img, (self.bounding.left, self.bounding.top), (self.bounding.right, self.bounding.bottom), color, 2)
