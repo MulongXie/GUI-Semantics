@@ -71,11 +71,12 @@ class GUI:
                 compos.append(ele)
             elif ele.attributes.element_class == 'Text':
                 texts.append(ele)
+
         # 1. classify compo class
         compos_clips = [compo.clip for compo in compos]
         labels = self.Classifier.predict_images(compos_clips, opt='compo')
         for i, compo in enumerate(compos):
-            compo.attribute.compo_class = labels[i]
+            compo.attributes.compo_class = labels[i]
 
     '''
     **************************

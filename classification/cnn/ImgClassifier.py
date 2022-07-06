@@ -12,7 +12,7 @@ import numpy as np
 
 
 class ImgClassifier:
-    def __init__(self, image_net_file='data/imagenet1000.txt'):
+    def __init__(self, image_net_file='classification/data/imagenet1000.txt'):
         '''
         Use ImageNet pretrained model to classify content in image element
         '''
